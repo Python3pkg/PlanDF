@@ -1,5 +1,5 @@
 import pandas
-import utils
+from . import utils
 
 class PlanMaker(object):
 

@@ -1,4 +1,4 @@
-from plan_maker import PlanMaker
+from .plan_maker import PlanMaker
 
 def read(plan_tuples, conversion_rates=False, scenarios=True):
 
@@ -6,7 +6,7 @@ def read(plan_tuples, conversion_rates=False, scenarios=True):
         try:
             p = PlanMaker(plan_tuples, conversion_rates)
         except:
-            print "Could not retrieve currency conversion rates." 
+            print("Could not retrieve currency conversion rates.") 
             p = False
 
     else:
@@ -18,7 +18,7 @@ def read(plan_tuples, conversion_rates=False, scenarios=True):
         else:
             return p
     else:
-		print "Could not read the plan_tuples."
+		print("Could not read the plan_tuples.")
 		return False
 
 import fred
@@ -35,9 +35,9 @@ class Constants(object):
     def set_hour_rate(self, h=None):
         if h:
             self.hour = h
-            print "Hour value of work (self.hour) was set to %s usd from FRED API. Retrieving currency rates.." % self.hour
+            print("Hour value of work (self.hour) was set to %s usd from FRED API. Retrieving currency rates.." % self.hour)
             self.set_currenc_rates()
-            print "Done."
+            print("Done.")
         else:
             fred.key('0c9a5ec8dd8c63ab8cbec6514a8f5b37')
             last_observation = fred.observations(
@@ -45,15 +45,15 @@ class Constants(object):
             h = last_observation['value']
             try:
                 self.hour = float(h)
-                print "Hour value of work (self.hour) was set to %s usd from FRED API." % self.hour
+                print("Hour value of work (self.hour) was set to %s usd from FRED API." % self.hour)
             except:
                 self.hour = 25.
-                print "Failed to retrieve rates from FRED API. Assuming 1h = 25usd."
+                print("Failed to retrieve rates from FRED API. Assuming 1h = 25usd.")
 
     def set_currenc_rates(self):
         currency_rates = requests.get('http://api.fixer.io/latest?base=USD').json()['rates']
         self.rates = pd.DataFrame( dict({'h': [self.hour], 'usd': 1.}, **{key.lower(): 1/currency_rates[key] for ix, key in enumerate(currency_rates)} ) )
-        print "Currency values had been set from FIXER IO, check the .rates attribute.\nThe currency 'h' means the time of 1 hour labor, based on FRED API."
+        print("Currency values had been set from FIXER IO, check the .rates attribute.\nThe currency 'h' means the time of 1 hour labor, based on FRED API.")
 
 
 constants = Constants()
@@ -64,7 +64,7 @@ class Plan(object):
             self.rates = constants.rates
             self.hour = constants.hour
         else:
-            print 'No currencies or hour value. Run plandf.init() to load constants.'
+            print('No currencies or hour value. Run plandf.init() to load constants.')
 
     def from_records(self, plan_dicts):
         self.info = read([(step['input'], step['output']) for step in plan_dicts], 
@@ -80,19 +80,19 @@ class Plan(object):
 
         for step in plan_dicts:
             i = ''
-            if 'i' in step.keys():
+            if 'i' in list(step.keys()):
                 i = step['i']
-            elif 'in' in step.keys():
+            elif 'in' in list(step.keys()):
                 i = step['in']
-            elif 'input' in step.keys():
+            elif 'input' in list(step.keys()):
                 i = step['input']
 
             o = ''
-            if 'o' in step.keys():
+            if 'o' in list(step.keys()):
                 o = step['o']
-            elif 'out' in step.keys():
+            elif 'out' in list(step.keys()):
                 o = step['out']
-            elif 'output' in step.keys():
+            elif 'output' in list(step.keys()):
                 o = step['output']
 
             records.append({'input': i, 'output': o})

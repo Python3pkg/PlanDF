@@ -10,13 +10,13 @@ class BasicTest(unittest.TestCase):
                 'output': 'liters of juice: 0.5; waste material grams: 20'}
         ])
         self.assertEqual(p.info.df['input']['time'][0],
-                         {'f_price': u'',
+                         {'f_price': '',
                            'f_units': '',
-                           'max_price': u'',
+                           'max_price': '',
                            'max_units': '1',
-                           'min_price': u'',
+                           'min_price': '',
                            'min_units': '1',
-                           'price_unit': u''})
+                           'price_unit': ''})
 
 if __name__ == '__main__':
     unittest.main()

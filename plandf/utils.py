@@ -1,5 +1,5 @@
 from datetime import timedelta
-import settings
+from . import settings
 import pandas
 import copy
 
@@ -8,8 +8,7 @@ import stepio
 
 """Make one DataFrame from a list of StepIO items."""
 make_df = lambda l: pandas.DataFrame.from_records([
-        pandas.Series(data=map(lambda x: x[x.keys()[0]],
-                                stepio.parse(s)),
+        pandas.Series(data=[x[list(x.keys())[0]] for x in stepio.parse(s)],
                       index=zip(*stepio.parse(s))[0])
         for s in l])
 """
@@ -31,7 +30,7 @@ def plandf(plan_tuples):
     """
     Makes two tables with groups of columns ['input', 'output']
     """
-    i, o = zip(*plan_tuples)
+    i, o = list(zip(*plan_tuples))
     return pandas.concat({'input': make_df(i), 
                           'output': make_df(o)},
                            axis=1)

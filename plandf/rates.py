@@ -4,7 +4,7 @@ import json
 import pandas
 
 # local app
-import settings
+from . import settings
 
 class Rates(object):
     def __init__(self, OXE_API=False, FRED_API=False):
